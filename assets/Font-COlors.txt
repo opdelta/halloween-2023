@@ -1,0 +1,7 @@
+Font Helios : Josefin Sans
+Font text : Poppins
+
+Vert foncé #2D4921
+Vert pâle #D3E8CA
+Gris foncé #737373
+Gris pâle #D9D9D9
