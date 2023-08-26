@@ -671,19 +671,31 @@ strong {
   top: 2px;
   bottom: 0;
 }
-
+/*--
 /* Center the modal vertically and horizontally */
-.modal.fade.show {
-  display: flex !important;
-  align-items: center;
-  justify-content: center;
-}
-
 /* Set maximum width for the modal content */
 .modal-dialog {
   max-width: 90%;
 }
 
+/* Add padding at the top of the content container */
+.modal-content-container {
+  padding-top: 20px; /* Adjust as needed */
+}
+
+/* Adjust modal-body scrolling for small screens */
+@media (max-width: 576px) {
+  .modal-body {
+    max-height: 80vh; /* Adjust the value as needed */
+    overflow-y: auto;
+    padding-top: 0; /* Remove padding-top to avoid double padding */
+  }
+}
+
+.stretched-img {
+  width: 100%;
+  height: auto;
+}
 /*---------------------------------------
   OUR MENU              
 -----------------------------------------*/
