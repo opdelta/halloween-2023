@@ -1,17 +1,44 @@
 from django.shortcuts import redirect, render
-from django.http import HttpResponse
 from django.contrib.auth import authenticate, login, logout
-from django.contrib import messages
-from wordgame.models import Wordgame
-# Import ButtonPressed model
-from wordgame.models import ButtonPressed
-import random
-import time
-import json
+from django.http import HttpResponse, JsonResponse
+import datetime
+import re
+from django.conf import settings
+import os
 # Create your views here.
 
 def home_view(request):
+    contact_form_path = settings.BASE_DIR / 'static' / 'feedbacks'  # Construct absolute path
+    if request.method == 'POST':
+        name = request.POST.get('name')
+        # remove spaces and special characters from name with regex
+        name = re.sub(r'\W+', '', name)
+
+        email = request.POST.get('email')
+        message = request.POST.get('message')
+        # get current datestamp from system
+        datestamp = datetime.datetime.now()
+        # Format the datestamp to a valid format for file names
+        formatted_datestamp = datestamp.strftime('%Y-%m-%dT%H%M%S')
+        print(datestamp)
+
+        # Process the form data here (e.g., save to the database)
+        # Redirect back to the same page after processing the form
+        print("name is " + name)
+        print("email is " + email)
+        print("message is " + message)
+        # Save the data as a new txt file in relative path ../static/feedbacks/name-datestamp.txt
+        file_path = os.path.join(contact_form_path, f"{name}-{formatted_datestamp}.txt")
+        with open(file_path, 'w') as f:
+            f.write('Name: ' + name + '\n')
+            f.write('Email: ' + email + '\n')
+            f.write('Message: ' + message + '\n')
+            f.write('Datestamp: ' + formatted_datestamp + '\n')
+        
+        return redirect('home')  # Redirect to the home page after form submission
+
     return render(request, 'index.html')
+
 
 def login_view(request):
     return render(request, 'login.html')
@@ -21,6 +48,19 @@ def wheel_view(request):
 
 def test_view(request):
     return render(request, 'test.html')
+
+def submit_form(request):
+    if request.method == 'POST':
+        name = request.POST.get('name')
+        email = request.POST.get('email')
+        message = request.POST.get('message')
+
+        # Do something with the form data, e.g., save it to the database
+
+        # Return a JSON response indicating success
+        return JsonResponse({'message': 'Form submitted successfully'})
+
+    return JsonResponse({'message': 'Invalid request method'}, status=400)
 # def home_view(request, context={}):
 # 
 #     if not request.user.is_authenticated or request.user.is_anonymous:
