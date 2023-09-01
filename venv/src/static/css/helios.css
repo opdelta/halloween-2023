@@ -691,7 +691,11 @@ strong {
     padding-top: 0; /* Remove padding-top to avoid double padding */
   }
 }
-
+#promo {
+  /* Add any specific styles for the "promo" section here */
+  /* For example, you can set its background color to transparent */
+  background-color: transparent;
+}
 .stretched-img {
   width: 100%;
   height: auto;
