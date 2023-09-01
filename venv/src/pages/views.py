@@ -8,6 +8,8 @@ import os
 # Create your views here.
 
 def home_view(request):
+    user_info = f"User IP: {request.META['REMOTE_ADDR']} | User Agent: {request.META['HTTP_USER_AGENT']}"
+    print(user_info)
     contact_form_path = settings.BASE_DIR / 'static' / 'feedbacks'  # Construct absolute path
     if request.method == 'POST':
         name = request.POST.get('name')
