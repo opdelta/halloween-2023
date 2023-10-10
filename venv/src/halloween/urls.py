@@ -14,13 +14,18 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
-from django.urls import path
-from pages.views import home_view, login_view, test_view, timeturner_view
-from wordgame.views import words_detail_view
+from django.urls import path, re_path
+import pages.views
+import countdown.views
+0
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', home_view, name='home'),
-    path('login/', login_view, name='login'),
-    path('timeturner/', timeturner_view, name='timeturner'),
+    path('', pages.views.home_view, name='home'),
+    path('login/', pages.views.login_view, name='login'),
+    path('countdown/', countdown.views.countdown_view, name='countdown'),
+    path('api/get_target_date/', countdown.views.get_target_date, name='get_remaining_time'),
+    re_path(r'^api/add_time/(?P<number>\d+)(?P<time_indicator>[smh])/$', countdown.views.add_time, name='add_time'),
+    re_path(r'^api/remove_time/(?P<number>\d+)(?P<time_indicator>[smh])/$', countdown.views.remove_time, name='add_time'),
+    path('api/reset_target_date/', countdown.views.reset_target_date, name='reset_target_date'),
 ]
 

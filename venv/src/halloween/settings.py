@@ -23,7 +23,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-7j7!z10ngi@3&0=f6&e5t*oygr=hx7qj94kr*a4$pi7)*c@k+_'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
 ALLOWED_HOSTS = ['*']
 
@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'wordgame',
     'pages',
+    'countdown',
 ]
 
 MIDDLEWARE = [
