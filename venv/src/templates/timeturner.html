@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HeliosRH - Time turner</title>
+    <link rel="icon" href="../static/images/timeturner.jpg" type="image/png" sizes="16x16">
+    <style>
+        body {
+            font-family: monospace;
+            background-color: black;
+            color: white;
+            padding: 20px;
+        }
+        .console {
+            width: 80%;
+            height: 400px;
+            background-color: #111;
+            border: 1px solid #555;
+            overflow-y: scroll;
+            padding: 10px;
+            margin-bottom: 20px;
+        }
+        input {
+            width: 100%;
+            padding: 5px;
+            background-color: #111;
+            color: white;
+            border: none;
+            outline: none;
+        }
+    </style>
+</head>
+<body>
+    <h1>Time turner</h1>
+    <p>Pour une liste des commandes possibles, tapez "help".</p>
+    <div class="console" id="console">
+        <div id="countdown">
+            <!-- Countdown will be displayed here -->
+        </div>
+        <!-- Content of the console will be displayed here -->
+    </div>
+    <input type="text" id="commandInput" placeholder="Enter a command">
+    
+    <script>
+        const commandHistory = []; // Array to store command history
+        const helpText = `Available Commands:<br>
+        help - Displays this message<br>
+        clear - Clears the console<br>
+        stop - Stops the time turner<br>
+        add - Adds 5m to the time turner<br>
+        subtract - Subtracts 5m from the time turner<br>
+        resume - Resumes the time turner`;
+        let offset = 0;
+        let countingdown = true;
+        // Function to update the countdown
+        function updateCountdown() {
+            // Calculate hours offsets from offset
+            const offsetHours = Math.floor(offset / 60);
+            const offsetMinutes = offset % 60;
+            const targetDate = new Date("2023-10-28T22:00:00Z"); // October 31st, 2023 11:00 PM UTC
+            const currentDate = new Date();
+            const remainingTime = targetDate - currentDate;
+            const days = Math.floor(remainingTime / (1000 * 60 * 60 * 24));
+            const hours = Math.floor((remainingTime % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60) + offsetHours);
+            const minutes = Math.floor((remainingTime % (1000 * 60 * 60)) / (1000 * 60) + offsetMinutes);
+            const seconds = Math.floor((remainingTime % (1000 * 60)) / 1000);
+            if (countingdown) {
+                document.getElementById("countdown").innerHTML = `<p>Countdown: ${days}d ${hours}h ${minutes}m ${seconds}s</p>`;
+            }
+            
+        }
+        // Function to display a message in the console
+        function displayMessage(message) {
+            const consoleElement = document.getElementById("console");
+            consoleElement.innerHTML += `<p>${message}</p>`;
+            consoleElement.scrollTop = consoleElement.scrollHeight; // Scroll to the bottom
+        }
+        
+        // Function to handle commands
+        function handleCommand() {
+            const inputElement = document.getElementById("commandInput");
+            const command = inputElement.value.trim();
+            inputElement.value = "";
+            
+            // Store the command in the command history
+            commandHistory.push(command);
+            
+            // Implement logic to check the command (replace this with your Django backend logic)
+            if (command === "help") {
+                // Display help message
+                displayMessage(helpText);
+
+            } else if (command === "clear") {
+                // Clear the console
+                document.getElementById("console").innerHTML = "<div id=\"countdown\"></div>";
+            } else if (command === "add") {
+                displayMessage("add");
+                offset += 5;
+            } else if (command === "subtract") {
+                displayMessage("subtract");
+                offset -= 5;
+            } else if (command === "stop") {
+                displayMessage("stop");
+                countingdown = false;
+            } else if (command === "resume") {
+                displayMessage("resume");
+                countingdown = true;
+            } else {
+                // Command not recognized, display an error message
+                displayMessage(`Unknown command: ${command}`);
+            }
+        }
+        
+        // Add event listener for the Enter key
+        document.getElementById("commandInput").addEventListener("keyup", function(event) {
+            if (event.key === "Enter") {
+                handleCommand();
+            }
+        });
+        
+        // Initialize countdown
+        updateCountdown();
+        
+        // Update the countdown every second
+        setInterval(updateCountdown, 1000);
+    </script>
+</body>
+</html>
