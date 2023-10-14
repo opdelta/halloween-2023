@@ -2,7 +2,7 @@ from django.shortcuts import render, get_object_or_404
 from django.http import HttpResponse, JsonResponse
 import datetime
 from django.conf import settings
-from countdown.models import Countdown
+from countdown.models import Countdown, Message
 from django.db.utils import IntegrityError
 # Create your views here.
 def countdown_view(request):
@@ -100,3 +100,42 @@ def reset_target_date(request):
         return JsonResponse({'message': f'Reset target date to {target.target_date}'})
     except IntegrityError as e:
         return JsonResponse({'error': str(e)}, status=400)
+
+def show_message(request, message_id):
+    # api endpoint meaning
+    # 0 = nothing
+    # 1 = add_time
+    # 2 = remove_time
+    # 3 = reset_target_date
+    
+    # This function is used to render the templates/message.html template with the specified message id from . If there is an api_param,
+    # the specified function is called before the page is displayed.
+    # Retrieve the message from the database
+    message = get_object_or_404(Message, id=message_id)
+    api_endpoint = message.api_endpoint_id
+    api_param_nb = message.api_param_nb
+    been_seen = message.been_seen
+    print("Fetched message[" + str(message_id) + "] from database: " + str(message))
+    # if a message has been seen, show message id 0. However, if it removes time, the time still gets removed. If it adds time, time does not get added again.
+    if been_seen == True:
+        message = get_object_or_404(Message, id=0)
+        if api_endpoint == 2:
+            remove_time(request, api_param_nb, 's')
+        return render(request, 'message.html', {'message': message.message})
+    else:
+        # Mark the message as seen
+        message.been_seen = True
+        message.save()
+        print("Marked message[" + str(message_id) + "] as seen: " + str(message))
+        if api_endpoint == 1:
+            add_time(request, api_param_nb, 's')
+            print("Added " + str(api_param_nb) + " seconds to the target date.")
+        elif api_endpoint == 2:
+            remove_time(request, api_param_nb, 's')
+            print("Removed " + str(api_param_nb) + " seconds from the target date.")
+        elif api_endpoint == 3:
+            reset_target_date(request)
+            print("Reset the target date.")
+        return render(request, 'message.html', {'message': message.message})
+
+

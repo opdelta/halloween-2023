@@ -27,5 +27,7 @@ urlpatterns = [
     re_path(r'^api/add_time/(?P<number>\d+)(?P<time_indicator>[smh])/$', countdown.views.add_time, name='add_time'),
     re_path(r'^api/remove_time/(?P<number>\d+)(?P<time_indicator>[smh])/$', countdown.views.remove_time, name='add_time'),
     path('api/reset_target_date/', countdown.views.reset_target_date, name='reset_target_date'),
+    # path to the api/show_message endpoint that includes a message id
+    re_path(r'^api/show_message/(?P<message_id>\d+)/$', countdown.views.show_message, name='show_message'),
 ]
 

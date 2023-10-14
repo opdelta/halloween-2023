@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <style>
+        body {
+            background-color: black;
+            color: green;
+            font-family: 'Courier New', monospace;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+        .message-container {
+            padding: 20px;
+            text-align: center;
+        }
+
+        @media (max-width: 768px) {
+            /* Adjust styling for smaller screens, such as tablets and mobile devices */
+            body {
+                font-size: 16px;
+            }
+            .message-container {
+                padding: 10px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            /* Further adjustments for smaller screens, such as mobile phones */
+            body {
+                font-size: 14px;
+            }
+            .message-container {
+                padding: 5px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="message-container">
+        <p>{{ message }}</p>
+    </div>
+</body>
+</html>
