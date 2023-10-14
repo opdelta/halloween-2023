@@ -117,8 +117,10 @@ def show_message(request, message_id):
     been_seen = message.been_seen
     print("Fetched message[" + str(message_id) + "] from database: " + str(message))
     # if a message has been seen, show message id 0. However, if it removes time, the time still gets removed. If it adds time, time does not get added again.
+    if message_id == 2:
+        return render(request, 'message.html', {'message': message})
     if been_seen == True:
-        message = get_object_or_404(Message, id=0)
+        message = get_object_or_404(Message, id=1)
         if api_endpoint == 2:
             remove_time(request, api_param_nb, 's')
         return render(request, 'message.html', {'message': message.message})
