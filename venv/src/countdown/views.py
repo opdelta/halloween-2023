@@ -1,6 +1,8 @@
 from django.shortcuts import render, get_object_or_404
+from django.core.exceptions import ObjectDoesNotExist
 from django.http import HttpResponse, JsonResponse
 import datetime
+import math
 from django.conf import settings
 from countdown.models import Countdown, Message
 from django.db.utils import IntegrityError
@@ -107,20 +109,41 @@ def show_message(request, message_id):
     # 1 = add_time
     # 2 = remove_time
     # 3 = reset_target_date
-    
+    # The real message_id is the square root of the message_id + 11. If the result is not an integer, take the floor of the result.
+    try:
+        real_message_id = str(math.floor(math.sqrt(int(message_id) - 11)))
+        # For each <br> tag in the message, replace it with a newline character
+    except ValueError:
+        message = get_object_or_404(Message, id=1)
+        message_text = message.message + " Votre tentative a soulevé une alarme et le compte à rebours a été réduit de 10m."
+        # TODO: Remove 10 minutes...
+        remove_time(request, 10, 'm')
+        return render(request, 'message.html', {'message': message_text})
+    print("Message ID: " + str(real_message_id))
     # This function is used to render the templates/message.html template with the specified message id from . If there is an api_param,
     # the specified function is called before the page is displayed.
-    # Retrieve the message from the database
-    message = get_object_or_404(Message, id=message_id)
+    
+    try:
+        message = Message.objects.get(id=real_message_id)
+        # for each <br> tag in the message, replace it with an actual br tag
+        message_text = message.message.replace('<br>', '<br/>')
+    except Message.DoesNotExist:
+        message = get_object_or_404(Message, id=1)
+        message_text = message.message + "Votre tentative a soulevé une alarme. Le compte à rebours a été réduit de 10m."
+        remove_time(request, 10, 'm')
+        return render(request, 'message.html', {'message': message_text})
+    
     api_endpoint = message.api_endpoint_id
     api_param_nb = message.api_param_nb
     been_seen = message.been_seen
-    print("Fetched message[" + str(message_id) + "] from database: " + str(message))
+    print("Fetched message[" + str(real_message_id) + "] from database: " + str(message))
     # if a message has been seen, show message id 0. However, if it removes time, the time still gets removed. If it adds time, time does not get added again.
-    print("Message id is " + str(message_id))
-    if str(message_id) == "2":
+    print("Message id is " + str(real_message_id))
+    
+    if str(real_message_id) == "2":
         print("Message id 2 detected.")
         return render(request, 'message.html', {'message': message.message})
+    
     if been_seen == True:
         message = get_object_or_404(Message, id=1)
         if api_endpoint == 2:
@@ -130,7 +153,7 @@ def show_message(request, message_id):
         # Mark the message as seen
         message.been_seen = True
         message.save()
-        print("Marked message[" + str(message_id) + "] as seen: " + str(message))
+        print("Marked message[" + str(real_message_id) + "] as seen: " + str(message))
         if api_endpoint == 1:
             add_time(request, api_param_nb, 's')
             print("Added " + str(api_param_nb) + " seconds to the target date.")
@@ -140,6 +163,7 @@ def show_message(request, message_id):
         elif api_endpoint == 3:
             reset_target_date(request)
             print("Reset the target date.")
-        return render(request, 'message.html', {'message': message.message})
+        return render(request, 'message.html', {'message': message_text})
+
 
 
