@@ -23,6 +23,7 @@ urlpatterns = [
     path('', pages.views.home_view, name='home'),
     path('login/', pages.views.login_view, name='login'),
     path('countdown/', countdown.views.countdown_view, name='countdown'),
+    path('timeturner', pages.views.timeturner_view, name='timeturner'),
     path('api/get_target_date/', countdown.views.get_target_date, name='get_remaining_time'),
     re_path(r'^api/add_time/(?P<number>\d+)(?P<time_indicator>[smh])/$', countdown.views.add_time, name='add_time'),
     re_path(r'^api/remove_time/(?P<number>\d+)(?P<time_indicator>[smh])/$', countdown.views.remove_time, name='add_time'),
