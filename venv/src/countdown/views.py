@@ -6,6 +6,7 @@ import math
 from django.conf import settings
 from countdown.models import Countdown, Message
 from django.db.utils import IntegrityError
+from django.utils import timezone
 # Create your views here.
 def countdown_view(request):
     return render(request, 'countdown.html')
@@ -97,11 +98,14 @@ def reset_target_date(request):
 
         # Update the target date for October 28th 2023 at 23:00:00
         target.target_date = datetime.datetime(2023, 10, 28, 23, 0, 0)
+        target.stopped = False
+        target.last_update = ""  # Set last_update to an empty string
         target.save()
 
         return JsonResponse({'message': f'Reset target date to {target.target_date}'})
     except IntegrityError as e:
         return JsonResponse({'error': str(e)}, status=400)
+
 
 def show_message(request, message_id):
     # api endpoint meaning
@@ -165,5 +169,66 @@ def show_message(request, message_id):
             print("Reset the target date.")
         return render(request, 'message.html', {'message': message_text})
 
+def stop(request):
+    try:
+        # Get the existing target date record or create a new one if it doesn't exist
+        target, created = Countdown.objects.get_or_create(id=2)
 
+        # Set the stopped flag to True
+        target.stopped = True
 
+        # Calculate the remaining time
+        target_date = target.target_date
+        current_time = timezone.now()
+        remaining_time = target_date - current_time
+
+        # Format the remaining time as a string
+        days, seconds = divmod(remaining_time.total_seconds(), 60 * 60 * 24)
+        hours, seconds = divmod(seconds, 60 * 60)
+        minutes, seconds = divmod(seconds, 60)
+        formatted_time = f"{int(days)}d {int(hours)}h {int(minutes)}m {int(seconds)}s"
+
+        # Set the last update time to the remaining time
+        target.last_update = formatted_time
+
+        # Save the updated target date
+        target.save()
+
+        return JsonResponse({'message': f'Stopped the countdown'})
+    except IntegrityError as e:
+        return JsonResponse({'error': str(e)}, status=400)
+
+def start(request):
+    try:
+        # Get the existing target date record or create a new one if it doesn't exist
+        target, created = Countdown.objects.get_or_create(id=2)
+
+        # Set the stopped flag to False
+        target.stopped = False
+
+        # Save the updated target date
+        target.save()
+
+        return JsonResponse({'message': f'Started the countdown'})
+    except IntegrityError as e:
+        return JsonResponse({'error': str(e)}, status=400)
+
+def is_stopped(request):
+    try:
+        # Get the existing target date record or create a new one if it doesn't exist
+        target, created = Countdown.objects.get_or_create(id=2)
+
+        # Return whether the countdown is stopped
+        return JsonResponse({'stopped': target.stopped})
+    except IntegrityError as e:
+        return JsonResponse({'error': str(e)}, status=400)
+
+def get_last_countdown(request):
+    try:
+        # Get the existing target date record or create a new one if it doesn't exist
+        target, created = Countdown.objects.get_or_create(id=2)
+
+        # Return the last countdown
+        return JsonResponse({'last_update': target.last_update})
+    except IntegrityError as e:
+        return JsonResponse({'error': str(e)}, status=400)

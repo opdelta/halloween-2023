@@ -2,6 +2,9 @@ from django.db import models
 
 class Countdown(models.Model):
     target_date = models.DateTimeField()
+    stopped = models.BooleanField(default=False)
+    # Last_updated is string
+    last_updated = models.CharField(max_length=128, default='')
 
 class Message(models.Model):
     message = models.CharField(max_length=1000)

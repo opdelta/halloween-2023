@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -50,7 +51,9 @@
         stop - Stops the time turner<br>
         add - Adds 5m to the time turner<br>
         subtract - Subtracts 5m from the time turner<br>
-        resume - Resumes the time turner`;
+        resume - Resumes the time turner<br>
+        reset - Resets the time turner<br>`
+        ;
         let offset = 0;
         let countingdown = true;
         // Function to update the countdown
@@ -103,9 +106,33 @@
             } else if (command === "stop") {
                 displayMessage("stop");
                 countingdown = false;
+                // GET request to /api/stop if the request is successful, display stopped time.
+                fetch("/api/stop/")
+                .then(response => response.json())
+                .then(data => {
+                    displayMessage(`${data.message}`);
+                });
+
+
             } else if (command === "resume") {
-                displayMessage("resume");
                 countingdown = true;
+                // GET request to /api/resume if the request is successful, display resumed time.
+                fetch("/api/start/")
+                .then(response => response.json())
+                .then(data => {
+                    displayMessage(`${data.message}`);
+                });
+            } else if (command === "reset") {
+                // Post request to /api/reset_target_date
+                fetch("/api/reset_target_date/")
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        displayMessage(`${data.message}`);
+                    } else {
+                        displayMessage(`${data.message}`);
+                    }
+                });
             } else {
                 // Command not recognized, display an error message
                 displayMessage(`Unknown command: ${command}`);

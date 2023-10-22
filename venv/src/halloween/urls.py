@@ -30,5 +30,9 @@ urlpatterns = [
     path('api/reset_target_date/', countdown.views.reset_target_date, name='reset_target_date'),
     # path to the api/show_message endpoint that includes a message id
     re_path(r'^api/show_message/(?P<message_id>\d+)/$', countdown.views.show_message, name='show_message'),
+    path('api/stop/', countdown.views.stop, name='stop'),
+    path('api/start/', countdown.views.start, name='start'),
+    path('api/is_time_stopped/', countdown.views.is_stopped, name='is_stopped'),
+    path('api/get_last_countdown/', countdown.views.get_last_countdown, name='get_last_countdown'),
 ]
 
