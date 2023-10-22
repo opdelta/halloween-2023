@@ -15,13 +15,13 @@
         .message-container {
             padding: 20px;
             text-align: center;
-            overflow-y: auto; /* Enable vertical scrolling if the content overflows */
+            max-width: 100%; /* Ensure the container doesn't exceed the screen width */
+            overflow: auto; /* Enable both horizontal and vertical scrolling if needed */
         }
 
         p {
             font-size: 64px; /* Set a larger font size for the text */
             line-height: 1.4; /* Adjust the line height for better readability */
-            white-space: pre-wrap; /* Prevent text from overflowing and wrap it as necessary */
         }
 
         @media (max-width: 768px) {
