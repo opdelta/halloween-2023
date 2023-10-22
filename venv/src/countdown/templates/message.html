@@ -9,35 +9,17 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            height: 100vh;
+            height: 10%;
             margin: 0;
         }
         .message-container {
-            padding: 20px;
+            padding: 10px;
             text-align: center;
-            max-width: 100%; /* Ensure the container doesn't exceed the screen width */
-            overflow: auto; /* Enable both horizontal and vertical scrolling if needed */
         }
 
         p {
-            font-size: 50px; /* Set a larger font size for the text */
+            font-size: 200%; /* Set a larger font size for the text */
             line-height: 1.4; /* Adjust the line height for better readability */
-            white-space: pre-line; /* Preserve newlines and wrap text as necessary */
-            word-wrap: break-word; /* Allow long words to wrap within the container */
-        }
-
-        @media (max-width: 768px) {
-            /* Adjust the font size for smaller screens, such as tablets and mobile devices */
-            p {
-                font-size: 36px;
-            }
-        }
-
-        @media (max-width: 480px) {
-            /* Further font size adjustment for smaller screens, such as mobile phones */
-            p {
-                font-size: 24px;
-            }
         }
     </style>
 </head>
