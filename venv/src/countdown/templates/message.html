@@ -15,11 +15,26 @@
         .message-container {
             padding: 20px;
             text-align: center;
+            overflow-y: auto; /* Enable vertical scrolling if the content overflows */
         }
 
         p {
             font-size: 64px; /* Set a larger font size for the text */
             line-height: 1.4; /* Adjust the line height for better readability */
+        }
+
+        @media (max-width: 768px) {
+            /* Adjust the font size for smaller screens, such as tablets and mobile devices */
+            p {
+                font-size: 36px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            /* Further font size adjustment for smaller screens, such as mobile phones */
+            p {
+                font-size: 24px;
+            }
         }
     </style>
 </head>
